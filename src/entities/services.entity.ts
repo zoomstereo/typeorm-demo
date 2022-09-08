@@ -9,5 +9,5 @@ export class Service {
   name: string;
 
   @Column()
-  price: string;
+  price: number;
 }

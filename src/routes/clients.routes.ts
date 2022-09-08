@@ -2,15 +2,21 @@ import { NextFunction, Request, Response, Router } from "express";
 import { AppDataSource } from "../data-source";
 import { Client } from "../entities/client.entity";
 import { ClientPets } from "../entities/client-pets.entity";
+import { EntityManager } from "typeorm";
 
 export function clientRoutes(router: Router = Router()) {
   const clientRepository = AppDataSource.getRepository(Client);
   const clientPetsRepository = AppDataSource.getRepository(ClientPets);
+  const entityManager = new EntityManager(AppDataSource);
 
   router.get(
     "/client",
     async (request: Request, response: Response, next: NextFunction) => {
-      const clients = await clientRepository.find();
+      const clients = await clientRepository.find({
+        relations: {
+          pets: true,
+        },
+      });
 
       response.status(200).json(clients);
     }
@@ -22,6 +28,15 @@ export function clientRoutes(router: Router = Router()) {
       const clientId = parseInt(request.params.id);
 
       const client = await clientRepository.findOneBy({ id: clientId });
+      
+      // const client = await entityManager.findOne(Client, {
+      //   where: {
+      //     id: clientId,
+      //   },
+      //   relations: {
+      //     pets: true,
+      //   },
+      // });
 
       response.status(200).json(client);
     }
@@ -68,7 +83,7 @@ export function clientRoutes(router: Router = Router()) {
       newPet.name = request.body.name;
       newPet.client = client;
 
-      const results = AppDataSource.manager.save(newPet);
+      const results = await AppDataSource.manager.save(newPet);
 
       response.status(201).json(results);
     }

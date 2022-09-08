@@ -1,4 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Relation,
+} from "typeorm";
 import { ClientPets } from "./client-pets.entity";
 import { Invoice } from "./invoices.entity";
 
@@ -17,5 +23,5 @@ export class Client {
   invoices: Invoice[];
 
   @OneToMany(() => ClientPets, (clientPet) => clientPet.client)
-  pets: ClientPets[];
+  pets: Relation<ClientPets[]>;
 }
