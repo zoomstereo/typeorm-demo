@@ -12,11 +12,12 @@ export function clientRoutes(router: Router = Router()) {
   router.get(
     "/client",
     async (request: Request, response: Response, next: NextFunction) => {
-      const clients = await clientRepository.find({
-        relations: {
-          pets: true,
-        },
-      });
+      const clients = await clientRepository.find();
+      // const clients = await clientRepository.find({
+      //   relations: {
+      //     pets: true,
+      //   },
+      // });
 
       response.status(200).json(clients);
     }
@@ -28,7 +29,7 @@ export function clientRoutes(router: Router = Router()) {
       const clientId = parseInt(request.params.id);
 
       const client = await clientRepository.findOneBy({ id: clientId });
-      
+
       // const client = await entityManager.findOne(Client, {
       //   where: {
       //     id: clientId,
@@ -54,8 +55,36 @@ export function clientRoutes(router: Router = Router()) {
     }
   );
 
-  // TODO: Delete
   // TODO: Update
+  router.put(
+    "/client/:id",
+    async (request: Request, response: Response, next: NextFunction) => {
+      const clientId = parseInt(request.params.id);
+
+      const client = await clientRepository.findOneBy({ id: clientId });
+
+      client.firstName = request.body.firstName;
+      client.lastName = request.body.lastName;
+
+      const results = await clientRepository.save(client);
+
+      response.status(201).json(results);
+    }
+  );
+
+  // TODO: Delete
+  router.delete(
+    "/client/:id",
+    async (request: Request, response: Response, next: NextFunction) => {
+      const clientId = parseInt(request.params.id);
+
+      const client = await clientRepository.findOneBy({ id: clientId });
+
+      const results = await clientRepository.delete(client);
+
+      response.status(201).json(results);
+    }
+  );
 
   router.get(
     "/client/:id/pets",
