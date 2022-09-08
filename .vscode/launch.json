@@ -1,0 +1,15 @@
+{
+  "name": "Attach",
+  "type": "node",
+  "request": "attach",
+  "skipFiles": ["<node_internals>/**"],
+  "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+  "configurations": [
+    {
+      "command": "npm run debug",
+      "name": "Debug",
+      "request": "launch",
+      "type": "node-terminal"
+    }
+  ]
+}
